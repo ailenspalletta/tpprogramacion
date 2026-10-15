@@ -1,0 +1,161 @@
+def crear_encabezados(linea,numeros,nombres):
+    lista_encabezados = []
+    lista_original_acum = []
+    lista_depurada = []
+    for i in linea:
+        if i == "":
+            i = "unnamed"
+        if i in lista_original_acum:
+            lista_depurada.append(f"{i} {lista_original_acum.count(i) + 1}")
+        else:
+            lista_depurada.append(i)
+        lista_original_acum.append(i)
+    if numeros != None:
+        for i in numeros:
+            lista_encabezados.append(lista_depurada[i - 1])
+    elif nombres != None:
+        for i in nombres:
+            lista_encabezados.append(lista_depurada[linea.index(i)])
+    else:
+        lista_encabezados = lista_depurada
+    return lista_encabezados
+
+# def crear_encabezados(linea,numeros,nombres):
+#     lista_encabezados = []
+#     lista_original_acum = []
+#     lista_depurada = []
+#     for i in linea:
+#         if i == "":
+#             i = "unnamed"
+#         if i in lista_original_acum:
+#             lista_depurada.append(f"{i} {lista_original_acum.count(i) + 1}")
+#         else:
+#             lista_depurada.append(i)
+#         lista_original_acum.append(i)
+#     if numeros != None:
+#         for i in numeros:
+#             lista_encabezados.append(linea[i])
+#     elif nombres != None:
+#         for i in nombres:
+#             lista_encabezados.append(linea[linea.index(i)])
+#     else:
+#         lista_encabezados = linea
+#     return lista_encabezados
+
+
+
+
+
+def generar_linea(encabezados,linea):
+    registro = {}
+    for i in range(0,len(encabezados)):
+        registro[encabezados[i]] = str(linea[i])
+    return registro
+
+def evaluar_tipo_de_dato(columna,tipo_dato):
+    if tipo_dato == None or tipo_dato == "":
+        if evaluar_booleano(columna):
+            return convertir_booleano
+        elif evaluar_int(columna):
+            return int
+        elif evaluar_float(columna):
+            return float
+        else:
+            return str
+    try:
+        diccionario = {"bool": convertir_booleano, "int": int, "float": float, "str":str}
+        return diccionario[tipo_dato]
+    except KeyError:
+        raise KeyError("Al menos uno de los tipos de datos proveídos no se coincide con las claves soportadas")
+ 
+def evaluar_booleano(columna):
+    for i in columna:
+        if i.lower() == "true" or i.lower() == "false":
+            continue
+        else:
+            return False
+    return True
+
+def convertir_booleano(string):
+    if string.lower() == "true":
+        return True
+    if string.lower() == "false":
+        return False 
+
+def evaluar_float(columna):
+    for i in columna:
+        try: 
+            float(i)
+        except ValueError:
+            return False
+    return True
+
+def evaluar_int(columna):
+    for i in columna:
+        try:
+            int(i)
+        except ValueError:
+            return False
+    return True
+       
+def convertir_columna(columna,funcion):
+    nueva_columna = []
+    for i in columna:
+        nueva_columna.append(funcion(i))
+    return nueva_columna
+
+def determinar_separador(ruta,separador):
+    if separador != None:
+        SEPARADOR = separador
+    else:
+        extension = ruta.split(".")[-1]
+        if extension == "csv":
+            SEPARADOR = ";"
+        elif extension == "tsv":
+            SEPARADOR = "\t"
+        elif extension == "psv":
+            SEPARADOR = "|"
+        else:
+            print("No se especificó ningun separador ni se pudo inferir un separador válido, se tomará (,) como separador")
+            SEPARADOR = ","
+    return SEPARADOR
+
+
+# class dataset:
+#     def __init__(self,ruta,encabezados,registros):
+#         self.ruta = ruta
+#         self.encabezados = encabezados 
+#         self.registros = registros
+
+#     @property
+#     def ruta(self):
+#         return self._ruta
+#     @ruta.setter
+#     def ruta(self,ruta):
+#         self._ruta = ruta
+
+#     @property
+#     def encabezados(self):
+#         return self._encabezados
+#     @encabezados.setter
+#     def encabezados(self,encabezados):
+#         self._encabezados = encabezados
+
+#     @property
+#     def registros(self):
+#         return self._registros
+#     @registros.setter
+#     def registros(self,registros):
+#         self._registros = registros 
+
+#     def agregar_nueva_fila(self,nueva_fila):
+
+#     def filtrar_dataset(self,funcion,columna):
+
+#     def devolver_fila_n(fila_n):
+
+#     def eliminar_fila_n(fila_n):
+
+#     def agregar_nueva_columna(nombre_columna,funcion_valor_inicial):
+
+
