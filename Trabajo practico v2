@@ -1,0 +1,137 @@
+# Cosas que tiene que soportar el lector:
+
+# 1- Permitir distintos separadores, intentando inferir el separador correcto
+# Completado, el programa admite que se le pase un separador cualquiera. Si no se le pasa ningun separador,
+# el programa intenta estimar el separador razonable en función de la extensión del archivo. Si no se pasó ningun
+# separador como argumento, ni se pudo estimar el separador razonablemente, se asume (,) como separador. 
+
+# 2- Intentar inferir automáticamente el tipo de columnas, permitiendo que el usuario especifique el tipo
+# Completado, primero todas las columnas se construyen como string, luego se evaluan las columnas segun los tipos
+# de datos que pasó el usuario como argumento, si no se pasó ningun argumento, se genera una lista de None para simular
+# que el usuario hubiese pasado esta lista como argumentos. 
+# Para los tipos de datos, el usuario debe pasar una lista con N valores siendo N el numero de columnas a evaluar. Si el
+# usuario quiere especificar los tipos de datos de solamente algunas de las columnas, debe pasar la lista completa, pero
+# los valores que quiera dejar que el programa asigne automáticamente, completarlos con "" o None.
+# Hice varias pruebas, pero no vendría mal hacer algunas más para ver potenciales errores
+
+# 3- Indicar que hacer con las columnas que tienen todos valores nulos
+# De momento no está incorporado en el programa. 
+
+# 4- Identificar que valores puede agrupar como booleanos
+# De momento no está incorporado en el programa. En principio, cualquier valor que sea True o False, sin importar
+# sin importar que se escriban en mayúsculas o minúculas lo evlaua como booleano. Se podría incorporar que se puedan evaluar
+# 0 y 1 como True y False también
+
+# 5- Especificar la cantidad de filas y columnas a leer
+# Completado, el programa permite especificar mediante una lista de integers o una lista de nombres las columanas que 
+# se quieran mantener. Las filas que se quieren mantener se deben especificar mediante una lista de integers.
+
+# 6- Filtrar las filas por un criterio
+# De momento no está incorporado en el programa.
+
+# Siguientes pasos: 
+# - En el archivo de funciones auxiliares, se debería definir una clase nuevo, que justamente sea el tipo de objeto 
+# que sería el dataset (la funcion crear_dataset debería devolver en última instancia un objeto de esta clase). 
+# De esta manera se pueden definir atributos como encabezados y registros, y se pueden definir métodos
+# para consultar registros puntuales, etc. La razón más importante de definir un objeto es que el filtrado del dataset, 
+# casi seguro que la manera más conveniente de hacerlo es como un método de clase de ese nuevo clase
+
+import funciones_auxiliares_tp as f
+
+# Definición de función principal
+def crear_dataset(
+    ruta, separador = None, tipo_columnas = None, nro_columnas_a_importar = None, nro_filas_a_importar = None, 
+    nombres_columnas_a_importar = None, archivo_sin_encabezados = False):
+
+    # Lectura del archivo según la ruta provista
+    archivo = open(ruta,"r")
+
+    # Determinación del separador, segun el valor provisto, si no se provee se infiere
+    SEPARADOR = f.determinar_separador(ruta,separador)
+
+
+    # Si el archivo tiene encabezados, se determinan en función de la primer linea 
+    if archivo_sin_encabezados == False:
+        primera_linea = archivo.readline().rstrip("\n").split(SEPARADOR)
+        encabezados = f.crear_encabezados(primera_linea,nro_columnas_a_importar,nombres_columnas_a_importar)
+        registros = []
+    # Si el archivo NO tiene encabezados, se construyen. Adicionalmente, como se leyó la primer linea,
+    # esta se incorpora a los registros si es necesario (no se puede volver a leer de nuevo)
+    elif archivo_sin_encabezados == True:
+        primera_linea = archivo.readline().rstrip("\n").split(SEPARADOR)
+        encabezados = [f"encabezado {i}" for i in range(0,len(primera_linea))]
+        registros = []
+        if nro_filas_a_importar != None:
+            if 1 in nro_filas_a_importar:
+                registros.append(f.generar_linea(encabezados,primera_linea))
+        else:
+            registros.append(f.generar_linea(encabezados,primera_linea))
+
+
+# El contador se establece en 2 porque la primer linea ya se evalúo anteriormente para construir los encabezados
+
+    contador = 2
+
+    # Si se especificaron lineas específicas a importar, se va verificando cuales leer y cuales no
+    # Las lineas a leer se identifican como una lista numérica, NO como un rango. 
+    # Esto es por si se quieren saltear lineas
+    # Si no se especifica, se leen todas las lineas
+
+    if nro_filas_a_importar != None:
+
+        for linea in archivo:
+            linea = linea.rstrip("\n").split(SEPARADOR) 
+            if contador not in nro_filas_a_importar:
+                contador += 1
+                continue
+            registros.append(f.generar_linea(encabezados,linea))
+            contador += 1
+
+    elif nro_filas_a_importar == None:
+        for linea in archivo:
+            linea = linea.rstrip("\n").split(SEPARADOR)
+            registros.append(f.generar_linea(encabezados,linea))
+    
+
+
+    # Si no se pasó un argumento para tipos de columnas, se construye una lista de None
+
+    if tipo_columnas == None:
+        tipo_columnas_lista = [None for i in range(0,len(encabezados))]
+    elif tipo_columnas != None:
+        tipo_columnas_lista = tipo_columnas
+
+    # Se construye una columna, luego se evalua a que tipo de dato necesita convertirse
+    # Se toma como prioridad el argumento provisto por el usuario, si no, se evaluan los 
+    # distintos tipos de datos y se asigna uno y se reconstruye la columna
+    # Luego, se reescribe la columna convertida en la lista de registros
+
+    for i,o in zip(encabezados,tipo_columnas_lista):
+        columna = []
+        for j in registros:
+             columna.append(j[i])
+        funcion_convertir_dato = f.evaluar_tipo_de_dato(columna,o)
+        columna = f.convertir_columna(columna,funcion_convertir_dato)
+        for k in registros:
+            k[i] = columna[registros.index(k)]
+    
+    #codigo de prueba
+    return encabezados,registros
+
+a,b = crear_dataset("dataset_prueba.txt",separador = ",", archivo_sin_encabezados=False, nro_columnas_a_importar=[1,2,3])
+
+
+
+# Modificaciones hechas:
+# - Se cambio el orden en la que se evaluan los tipos de dato, primero se evalua int antes que float
+# - Se corrigió la función evaluar_booleano()
+# - Se corrigió el return de la función crear_encabezados()
+# - Se corrigió la función de generar lineas (len(encabezados) en vez de len(linea))
+# - Se reemplazó next por continue 
+# - Se agregó contador += 1 antes de continue 
+# - Se agregó el código para archivo_sin_encabezados == True
+# - Se agregó la lógica en evaluar tipo de dato para que analice los tipos de datos proveídos por el usuario
+
+
+# Que cosas faltan hacer:
+# Construir las salidas de errores, sobre todo si se dan argumentos que son incorrectos o incoherentes
