@@ -9,8 +9,8 @@ class LectorTabla:
     # Metodo principal
     # Este es el que hace exactamente lo que pide el objetivo del TP, leer y retornar el archivo.
     def leer_tabla(self):
-        archivo = open(self.tabla,"r")
-        lineas = archivo.read().strip().split("\n")
+        with open(self.tabla,"r") as archivo:
+            lineas = archivo.read().strip().split("\n")
         # Aqui lo hice en el caso de que si tenga encabezado pero pueden programar abajo, que pasaria si no hay encabezado
         if self.tiene_encabezado == True:
             encabezado = lineas[0].split(",")
