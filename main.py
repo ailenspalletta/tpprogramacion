@@ -1,4 +1,4 @@
-from lector.lector_tabla import LectorTabla
+from lector.lectortablaailen import LectorTabla
 
 # En main se creara la interfaz del tp, mientras que la logica del TP se crea en la carpeta 'lector', aqui es donde se pone a prueba el lector
 # La parte visible del proyecto, en pocas palabras
