@@ -25,12 +25,13 @@ print(tabla.leer_tabla())
 # En el caso de que haya un encabezado vacío, se le pide al usuario que complete el nombre del encabezado (se considera el caso de que coloque dos veces el mismo nombre de encabezado)
 # También se podría probar para el caso de que no haya ningún encabezado
 
-tabla = LectorTabla(ruta="datos/encabezadovacio.csv",tiene_encabezado=True)
+tabla1 = LectorTabla(ruta="datos/encabezadovacio.csv",tiene_encabezado=True)
 
-print(tabla.leer_tabla())
+print(tabla1.leer_tabla())
 
 # En el caso de que haya una celda vacía, reemplaza el valor por None
 
 tabla = LectorTabla(ruta="datos/celdavacia.csv",tiene_encabezado=True)
 
 print(tabla.leer_tabla())
+

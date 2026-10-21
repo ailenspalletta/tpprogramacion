@@ -80,18 +80,39 @@ class LectorTabla:
         self.encabezado_sin_filtrar = encabezado_sin_filtrar
         resultado = []
 
-        # Pedimos al usuario por consola que indique desde qué línea quiere empezar a leer
-        entrada_linea = input(f"El archivo tiene {len(lineas)} líneas. ¿Desde qué línea deseas empezar a leer? (Presiona Enter para el inicio automático): ")
-        if entrada_linea.strip():
-            self.linea_inicio = int(entrada_linea)
+        # Pedimos al usuario por consola que indique desde qué línea hasta qué línea quiere empezar a leer
+        total_lineas = len(lineas) - 1 
+        print(f"El archivo tiene un total de {total_lineas} líneas.")
+        # Pedir línea de inicio (si hay 4 filas donde la primera es el encabezado, el usuario empieza a contar sin tener en cuenta el encabezado)
+        while True:
+            try:
+                entrada_inicio = input("¿Desde qué línea deseas empezar a leer? (Presiona Enter para el inicio automático): ").strip()
+                if not entrada_inicio:
+                    self.linea_inicio = 1
+                    break
+                self.linea_inicio = int(entrada_inicio)
+                if 1 <= self.linea_inicio <= total_lineas:
+                    break
+                print(f"Por favor, introduce un número entre 1 y {total_lineas}.")
+            except ValueError:
+                print("Entrada no válida. Por favor, introduce un número entero.")
+        # Pedir línea de fin
+        while True:
+            try:
+                entrada_fin = input(f"¿Hasta qué línea deseas leer? (Presiona Enter para ir hasta el final): ").strip()
+                if not entrada_fin:
+                    linea_fin = total_lineas
+                    break
+                linea_fin = int(entrada_fin)
+                if self.linea_inicio <= linea_fin <= total_lineas:
+                    break
+                print(f"Por favor, introduce un número entre {self.linea_inicio} y {total_lineas}.")
+            except ValueError:
+                print("Entrada no válida. Por favor, introduce un número entero.")
+        
+        lineas_recortadas = lineas[self.linea_inicio : linea_fin + 1] # recortar la lista usando el rango del usuario (ajustando al índice de Python)
 
-        # Si se indicó una línea de inicio, recortamos la lista antes de que empiece la lógica
-        if self.linea_inicio is not None:
-          lineas = lineas[self.linea_inicio - 1 :]
-
-        # Se empieza en la linea '1' ya que la linea '0' es el mismo encabezado
-
-        for linea in lineas[1:]:
+        for linea in lineas_recortadas:
 
             if self.separador == ",":
                 # Buscamos patrones con comillas y comas internas y las unificamos con puntos
