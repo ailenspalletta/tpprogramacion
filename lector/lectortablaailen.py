@@ -1,10 +1,14 @@
 class LectorTabla:
-    def __init__(self, ruta: str, separador: str = ",", tiene_encabezado: float = False, linea_inicio: int | None = None, tipo_datos_columnas = None):
+    def __init__(
+        self, ruta: str, separador: str = ",", tiene_encabezado: float = False,
+        linea_inicio: int | None = None, tipo_datos_columnas = None, columnas_a_leer = None):
+
         self.tabla = ruta
         self.separador = separador
         self.tiene_encabezado = tiene_encabezado
         self.linea_inicio = linea_inicio # Nueva variable para guardar desde qué línea empezar a leer
         self.tipo_datos_columnas = tipo_datos_columnas
+        self.columnas_a_leer = columnas_a_leer
         
     # Metodo principal
     # Este es el que hace exactamente lo que pide el objetivo del TP, leer y retornar el archivo.
@@ -26,6 +30,7 @@ class LectorTabla:
             # Si detecta un campo vacío en el encabezado del archivo, te pide completarlo y si el que se coloca está repetido te pide que pongas otro nombre
             encabezado_crudo = lineas[0].split(self.separador)
             encabezado = []
+            encabezado_sin_filtrar = []
             for i in range(len(encabezado_crudo)):
                 nombre = encabezado_crudo[i].strip()
                 while True:
@@ -39,7 +44,12 @@ class LectorTabla:
                         nombre = input(f"Ya usaste el nombre '{nombre}' en una columna anterior. Ingresa otro nombre para la columna {i+1}: ").strip()
                     else:
                         break # El nombre es válido y no está repetido, salimos del bucle
-                encabezado.append(nombre)           
+                if self.columnas_a_leer == None:
+                    encabezado.append(nombre)
+                else:
+                    if nombre in (self.columnas_a_leer):
+                        encabezado.append(nombre)
+                encabezado_sin_filtrar.append(nombre)       
         else:
             # Si no tiene encabezado, separamos la primera linea (lineas[0]) usando el separador correcto
             primer_linea = lineas[0].split(self.separador)
@@ -48,6 +58,7 @@ class LectorTabla:
             if entrada_usuario.strip():
                 nombres_usuario = [n.strip() for n in entrada_usuario.split(",")]
                 encabezado = []
+                encabezado_sin_filtrar = []
                 for i in range(len(primer_linea)):
                     # Si el usuario puso un nombre para esta posición, lo tomamos; si no, queda vacío para pedirlo
                     nombre = nombres_usuario[i].strip() if i < len(nombres_usuario) else ""
@@ -60,9 +71,13 @@ class LectorTabla:
                         else:
                             break
                     encabezado.append(nombre)
+                    encabezado_sin_filtrar.append(nombre)
+
             else:
                 encabezado = [f"Column_{i+1}" for i in range(len(primer_linea))]
+                encabezado_sin_filtrar = [f"Column_{i+1}" for i in range(len(primer_linea))]
         self.encabezado = encabezado
+        self.encabezado_sin_filtrar = encabezado_sin_filtrar
         resultado = []
 
         # Pedimos al usuario por consola que indique desde qué línea quiere empezar a leer
@@ -93,14 +108,16 @@ class LectorTabla:
             valores = linea.split(self.separador)
             fila_dict = {}
 
-            for i in range(len(encabezado)):
-                clave = encabezado[i].strip()
+            for i in range(len(encabezado_sin_filtrar)):
+                clave = encabezado_sin_filtrar[i].strip()
                 valor = valores[i].strip()
 
+                if encabezado_sin_filtrar[i] not in encabezado:
+                    continue
+                
                 valor_final = str(valor)
                 fila_dict[clave] =  valor_final
 
-                
             resultado.append(fila_dict)
 
         # Luego de construir el dataset, se asigna a la propiedad dataset del objeto de clase
