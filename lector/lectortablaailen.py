@@ -1,7 +1,7 @@
 class LectorTabla:
     def __init__(
-        self, ruta: str, separador: str = ",", tiene_encabezado: float = False,
-        linea_inicio: int | None = None, tipo_datos_columnas = None, columnas_a_leer = None):
+        self, ruta: str, separador: str = ",", tiene_encabezado: bool = False,
+        linea_inicio: int | None = None, tipo_datos_columnas: list = None, columnas_a_leer: list = None):
 
         self.tabla = ruta
         self.separador = separador
@@ -9,6 +9,7 @@ class LectorTabla:
         self.linea_inicio = linea_inicio # Nueva variable para guardar desde qué línea empezar a leer
         self.tipo_datos_columnas = tipo_datos_columnas
         self.columnas_a_leer = columnas_a_leer
+        self.leer_tabla()
         
     # Metodo principal
     # Este es el que hace exactamente lo que pide el objetivo del TP, leer y retornar el archivo.
@@ -159,6 +160,7 @@ class LectorTabla:
     # con dicho tipo de datos, luego se reemplaza la columna en el dataset original. 
     # Los tipos de datos porveídos tienen prioridad, si no se pasó ninguno, el programa evalúa cual es el tipo
     # más adecuado 
+
 
     def _transformar_columnas_dataset(self,encabezados,lista_tipo_datos):
 
