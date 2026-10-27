@@ -1,0 +1,18 @@
+En lectorTabla se hicieron estos cambios
+
+Ivan Torres
+1 - Se restructuro toda la clase, dividi el codigo en metodos protegidos
+    (Explico el 'por que' en un comentario arriba del metodo principal)
+2- Cree 2 nuevos metodos para la transformacion del dataset
+    - '_detecarTipoColumna': Evalua cual es el tipo de dato que se utiliza en la columna.
+        Si son todos 'int', es int, pero con que exista un solo float, decide que la columna sera 'float'.
+
+    - '_tipar_dataset': Este metodo es el que ejecuta la funcion de tipar cada columna, utiliza el resultado de la evaluacion
+        del metodo '_detecarTipoColumna' para convertir cada columna en su tipo de dato.
+    
+    Lo probe con el CSV que no tiene errores y funciono a la perfeccion.
+    Falta agregarle lo que tiene que hacer si el campo esta vacio, solamente hay que agregarle otro 'if' abajo de los que ya tiene
+
+    Probar en encontrarle errores
+
+

@@ -1,13 +1,26 @@
-from lector.lectortablaailen import LectorTabla
+from lector.lectorTabla import LectorTabla
 
-# En main se creara la interfaz del tp, mientras que la logica del TP se crea en la carpeta 'lector', aqui es donde se pone a prueba el lector
-# La parte visible del proyecto, en pocas palabras
 
 # El codigo que esta aca es un simple ejemplo para que vean como funciona ya el programa. ejecuten este programa y veran como funciona
 tabla = LectorTabla(ruta="datos/productos.csv",tiene_encabezado=True)
 
 print(tabla.leer_tabla())
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
 # Variantes:
 
 # En el caso de que el archivo no tenga encabezado, se le solicita al usuario que cree los nombres de los encabezados separados por coma:
@@ -35,3 +48,4 @@ tabla = LectorTabla(ruta="datos/celdavacia.csv",tiene_encabezado=True)
 
 print(tabla.leer_tabla())
 
+"""
