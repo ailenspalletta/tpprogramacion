@@ -16,3 +16,13 @@ Ivan Torres
     Probar en encontrarle errores
 
 
+3 - Agregue para que la columna sea convertida en el tipo de dato 
+        correspondiente, pero, si tiene un dato faltante, lo convierte en 'None'
+
+4- Se agrego documentacion a todos los metodos
+
+5- Se arreglaron algunos errores basicos
+
+6- Se agregaron los metodos "filtrar_dataset" y "crear_consulta"
+
+----
