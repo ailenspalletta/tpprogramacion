@@ -25,4 +25,7 @@ Ivan Torres
 
 6- Se agregaron los metodos "filtrar_dataset" y "crear_consulta"
 
-----
+Ailén:
+
+1- Se convirtió la lista de diccionario a un Data Frame
+2- Se agregaron 6 ejemplos de uso 
