@@ -11,7 +11,7 @@ Ivan Torres
         del metodo '_detecarTipoColumna' para convertir cada columna en su tipo de dato.
     
     Lo probe con el CSV que no tiene errores y funciono a la perfeccion.
-    Falta agregarle lo que tiene que hacer si el campo esta vacio, solamente hay que agregarle otro 'if' abajo de los que ya tiene
+    Falta agregarle lo que tiene que hacer si el campo esta vacio, solamente hay que agregarle otro 'if' abajo de los que ya tiene --> ya está hecho
 
     Probar en encontrarle errores
 
